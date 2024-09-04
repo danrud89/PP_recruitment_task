@@ -3,18 +3,11 @@ Scenariusz testowy 1: Walidacja pól obowiązkowych
 Kroki:
 
     Otwórz stronę z formularzem rejestracji.
-    Kliknij przycisk "ZAREJESTRUJ" bez wypełniania żadnych pól.
+    Kliknij przycisk "ZAREJESTRUJ" bez wypełniania pól formularza.
 
 Oczekiwany rezultat:
 
-    Wyświetlają się komunikaty błędów dla wszystkich obowiązkowych pól:
-        "Pole Imię jest wymagane"
-        "Pole Nazwisko jest wymagane"
-        "Pole E-mail jest wymagane"
-        "Pole Hasło jest wymagane"
-        "Pole Powtórz hasło jest wymagane"
-        "Pole Data urodzenia jest wymagane"
-        "To pole jest wymagane" dla checkboxa akceptacji regulaminu.
+    Wyświetlają się komunikaty błędów dla wszystkich obowiązkowych pól,
     Formularz nie zostaje wysłany.
 
 Scenariusz testowy 2: Poprawne wypełnienie formularza
@@ -39,12 +32,12 @@ Oczekiwany rezultat:
     Formularz zostaje poprawnie wysłany.
     Użytkownik zostaje przekierowany na stronę potwierdzającą rejestrację lub pojawia się komunikat o pomyślnej rejestracji.
 
-Scenariusz testowy 3: Weryfikacja poprawności adresu e-mail
+Scenariusz testowy 3: Weryfikacja poprawności adresu e-mail.
 
 Kroki:
 
     Otwórz stronę z formularzem rejestracji.
-    Wypełnij pola obowiązkowe, ale w polu "Adres e-mail" wpisz niepoprawny adres (np. "jan.kowalski.com").
+    Wypełnij pola obowiązkowe, ale w polu "Adres e-mail" wpisz niepoprawny(e) adres(y) (np. "jan.kowalski.com").
     Wypełnij pozostałe obowiązkowe pola i zaznacz checkbox akceptacji regulaminu.
     Kliknij przycisk "ZAREJESTRUJ".
 
@@ -53,7 +46,7 @@ Oczekiwany rezultat:
     Pojawia się komunikat błędu informujący, że wprowadzony adres e-mail jest nieprawidłowy.
     Formularz nie zostaje wysłany.
 
-Scenariusz testowy 4: Niezgodność haseł
+Scenariusz testowy 4: Niezgodność haseł.
 
 Kroki:
 
@@ -81,7 +74,7 @@ Oczekiwany rezultat:
     Pojawia się komunikat błędu informujący, że wprowadzony adres e-mail jest nieprawidłowy.
     Formularz nie zostaje wysłany.
 
-Scenariusz testowy 6: Rejestracja z wykorzystanie wyłącznie pól obowiązkowych
+Scenariusz testowy 6: Rejestracja z wykorzystaniem wyłącznie pól obowiązkowych.
 
 Kroki:
 
