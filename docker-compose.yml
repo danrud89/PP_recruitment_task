@@ -1,0 +1,15 @@
+version: '3'
+services:
+  app:
+    build: .
+    networks:
+      - nginx-proxy
+    expose:
+      - '80'
+    env_file:
+      - .config
+    tty: true
+
+networks:
+  nginx-proxy:
+    external: true

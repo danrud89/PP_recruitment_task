@@ -1,0 +1,43 @@
+{
+  "name": "form-test",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "linter": "biome lint .",
+    "format": "biome format --write .",
+    "e2e": "npx playwright test",
+    "e2e:headed": "npx playwright test --headed",
+    "show-e2e-report": "npx playwright show-report"
+  },
+  "dependencies": {
+    "@cospired/i18n-iso-languages": "^4.2.0",
+    "core-js": "^3.6.5",
+    "vee-validate": "^3.4.10",
+    "vue": "^2.6.11",
+    "vue-tel-input": "^5.1.0",
+    "vue2-datepicker": "^3.11.1"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
+    "@playwright/test": "^1.46.1",
+    "@types/node": "^22.5.3",
+    "@vue/cli-plugin-babel": "^4.5.13",
+    "@vue/cli-plugin-eslint": "^4.5.13",
+    "@vue/cli-service": "^4.5.13",
+    "@vue/eslint-config-prettier": "^6.0.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.7.2",
+    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-vue": "^6.2.2",
+    "prettier": "^2.2.1",
+    "vue-template-compiler": "^2.6.11"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}
