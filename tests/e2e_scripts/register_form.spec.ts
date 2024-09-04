@@ -18,6 +18,10 @@ test.describe("Registration Form ", () => {
 
 		// Assert
 		await expect(registrationPage.heading).toBeVisible();
+    await expect(registrationPage.firstName).toBeVisible();
+    await expect(registrationPage.firstName).toBeVisible();
+    await expect(registrationPage.firstName).toBeVisible();
+    
 	});
 
 	test("should display validation errors for required fields", async () => {
