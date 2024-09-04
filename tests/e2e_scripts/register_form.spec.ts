@@ -18,7 +18,7 @@ test.describe('Registration Form', () => {
     expect(errorMessages).toContain('Pole Imię jest wymagane');
     expect(errorMessages).toContain('Pole Nazwisko jest wymagane');
     expect(errorMessages).toContain('Pole E-mail jest wymagane');
-    expect(errorMessages).toContain('Pole Hasło jest wymagane');
+    expect(errorMessages).toContain('Pole password jest wymagane');
     expect(errorMessages).toContain('Pole Powtórz hasło jest wymagane');
     expect(errorMessages).toContain('Pole Data urodzenia jest wymagane');
     expect(errorMessages).toContain('To pole jest wymagane');

@@ -11,7 +11,7 @@ export default defineConfig({
 	use: {
 		baseURL: "http://localhost:8080", 
 		trace: "on-first-retry", 
-		headless: true,
+		headless: false,
 		viewport: { width: 1920, height: 1080 },
 		actionTimeout: 15000,
 		ignoreHTTPSErrors: true,

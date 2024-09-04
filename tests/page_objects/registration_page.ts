@@ -50,7 +50,7 @@ export class RegistrationPage extends BasePage {
 		await locator.fill("");
 	}
 
-	async fillFirstName(firstName: string) {
+	async fillFirstName(firstName: string): Promise <void> {
 		try {
 			await this.clearInputField(this.firstName);
 			await this.firstName.fill(firstName);
@@ -60,7 +60,7 @@ export class RegistrationPage extends BasePage {
 		}
 	}
 
-	async fillLastName(lastName: string) {
+	async fillLastName(lastName: string): Promise <void> {
 		try {
 			await this.clearInputField(this.password);
 			await this.lastName.fill(lastName);
@@ -70,7 +70,7 @@ export class RegistrationPage extends BasePage {
 		}
 	}
 
-	async fillEmail(email: string) {
+	async fillEmail(email: string): Promise <void> {
 		try {
 			await this.clearInputField(this.email);
 			await this.email.fill(email);
@@ -80,7 +80,7 @@ export class RegistrationPage extends BasePage {
 		}
 	}
 
-	async fillPassword(password: string) {
+	async fillPassword(password: string): Promise <void> {
 		try {
 			await this.clearInputField(this.password);
 			await this.password.fill(password);
@@ -90,7 +90,7 @@ export class RegistrationPage extends BasePage {
 		}
 	}
 
-	async fillConfirmPassword(confirmPassword: string) {
+	async fillConfirmPassword(confirmPassword: string): Promise <void> {
 		try {
 			await this.clearInputField(this.confirmPassword);
 			await this.confirmPassword.fill(confirmPassword);
@@ -100,7 +100,7 @@ export class RegistrationPage extends BasePage {
 		}
 	}
 
-	async fillDob(dob: string, calendarName: "dob") {
+	async fillDob(dob: string, calendarName: "dob"): Promise <void> {
 		try {
 			const calendarLocator = this.calendarMap.get(calendarName);
 			if (!calendarLocator) {
@@ -114,7 +114,7 @@ export class RegistrationPage extends BasePage {
 		}
 	}
 
-	async selectLanguage(language: string) {
+	async selectLanguage(language: string): Promise <void> {
 		try {
 			const options = await this.language.locator("option").allTextContents();
 			if (options.includes(language)) {
@@ -133,7 +133,7 @@ export class RegistrationPage extends BasePage {
 		}
 	}
 
-	async fillPhoneNumber(phoneNumber: string) {
+	async fillPhoneNumber(phoneNumber: string): Promise <void> {
 		try {
 			await this.clearInputField(this.phoneNumber);
 			await this.phoneNumber.fill(phoneNumber);
@@ -146,7 +146,7 @@ export class RegistrationPage extends BasePage {
 		}
 	}
 
-	async acceptTerms() {
+	async acceptTerms(): Promise <void> {
 		try {
 			await this.terms.check();
 		} catch (error) {
@@ -155,7 +155,7 @@ export class RegistrationPage extends BasePage {
 		}
 	}
 
-	async subscribeNewsletter() {
+	async subscribeNewsletter(): Promise <void> {
 		try {
 			await this.newsletter.check();
 		} catch (error) {
@@ -164,7 +164,7 @@ export class RegistrationPage extends BasePage {
 		}
 	}
 
-	async submitForm() {
+	async submitForm(): Promise <void> {
 		try {
 			const isVisible = await this.submitButton.isVisible();
 			const isEnabled = await this.submitButton.isEnabled();
@@ -180,16 +180,29 @@ export class RegistrationPage extends BasePage {
 		}
 	}
 
-	async getErrorMessages() {
+	async getErrorMessages(): Promise<string[]> {
 		try {
-			if (await this.errorMessages.isVisible()) {
-				return await this.errorMessages.allTextContents();
+		  const errorElements = this.page.locator('span.errors');
+		  const errorMessages: string[] = [];
+	  
+		  for (let index = 0; index < await errorElements.count(); ++index) {
+			const errorElement = errorElements.nth(index);
+			if (await errorElement.isVisible()) {
+			  const text = await errorElement.textContent();
+			  if (text) {
+				errorMessages.push(text);
+			  }
 			}
+		  }
+	  
+		  if (errorMessages.length === 0) {
 			console.warn("No error messages are visible on the page.");
-			return [];
+		  }
+	  
+		  return errorMessages;
 		} catch (error) {
-			console.error("Error retrieving error messages:", error);
-			throw error;
+		  console.error("Error retrieving error messages:", error);
+		  throw error;
 		}
-	}
+	  }
 }
