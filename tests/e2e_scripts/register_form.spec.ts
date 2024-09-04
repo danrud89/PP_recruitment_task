@@ -35,8 +35,6 @@ test.describe('Registration Form', () => {
     await registrationPage.fillDob(userData.dob);
     await registrationPage.acceptTerms();
     await registrationPage.submitForm();
-
-    await 
   });
 
   test('should show error for invalid email', async () => {

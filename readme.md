@@ -6,11 +6,7 @@ Clone the repository
 git clone https://github.com/danrud89/PP_recruitment_task.git
 ```
 
-Then open the directory
-
-```bash
-cd qa-form
-```
+Then open the directory via terminal
 
 Install and use Node.js v16.20.2, you can do that using nvm
 
