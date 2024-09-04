@@ -34,6 +34,7 @@ export class RegistrationPage extends BasePage {
 		"To pole może zawierać tylko cyfry i spacje",
 		"To pole musi zawierać co najmniej 9 cyfr",
 	];
+	readonly elements: Locator[];
 
 	constructor(page: Page) {
 		super(page);
@@ -53,11 +54,26 @@ export class RegistrationPage extends BasePage {
 		this.errorMessages = page.locator("span.errors");
 		this.calendarMap = new Map<string, Locator>([["dob", this.dateOfBirth]]);
 		this.dataGenerator = new RandomDataGenerator();
+		this.elements = [
+			this.form,
+			this.firstName,
+			this.lastName,
+			this.email,
+			this.password,
+			this.confirmPassword,
+			this.dateOfBirth,
+			this.language,
+			this.phoneNumber,
+			this.terms,
+			this.newsletter,
+			this.submitButton,
+		];
 	}
 
 	async visit() {
 		try {
 			await this.page.goto("/");
+			await this.form.waitFor({ state: "visible", timeout: 2000 });
 		} catch (error) {
 			console.error("Error navigating to the page:", error);
 			throw error;

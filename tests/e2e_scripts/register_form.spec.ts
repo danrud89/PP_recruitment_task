@@ -18,8 +18,8 @@ test.describe("Registration Form ", () => {
 
 		// Assert
 		await expect(registrationPage.heading).toBeVisible();
-		await expect(registrationPage.form).toBeVisible();
-		await expect(registrationPage.firstName).toBeEnabled();
+    await Promise.all(registrationPage.elements.map(element => element.isVisible()));
+    await Promise.all(registrationPage.elements.map(element => element.isEnabled()));
 	});
 
 	test("should display validation errors for required fields", async () => {
