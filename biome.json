@@ -1,0 +1,40 @@
+{
+	"$schema": "https://biomejs.dev/schemas/1.6.4/schema.json",
+	"organizeImports": {
+		"enabled": true
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"complexity": {
+				"noStaticOnlyClass": "off",
+				"noThisInStatic": "off"
+			},
+			"suspicious": {
+				"noArrayIndexKey": "off"
+			}
+		},
+		"ignore": [
+			"*.gen.ts",
+			"dist",
+			"node_modules",
+			"*.d.ts",
+			"package-lock.json",
+			".pnpm-store",
+			"src/components/ui",
+			"playwright-report"
+		]
+	},
+	"formatter": {
+		"enabled": true,
+		"ignore": [
+			"*.gen.ts",
+			"dist",
+			"node_modules",
+			"*.d.ts",
+			"package-lock.json",
+			".pnpm-store"
+		]
+	}
+}
