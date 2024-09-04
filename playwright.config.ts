@@ -2,7 +2,7 @@ import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
 	testDir: "./tests/e2e_scripts",
-	timeout: 600000,
+	timeout: 30 * 1000,
 	fullyParallel: true,
 	forbidOnly: !!process.env.CI,
 	retries: process.env.CI ? 1 : 1,
@@ -11,7 +11,7 @@ export default defineConfig({
 	use: {
 		baseURL: "http://localhost:8080", 
 		trace: "on-first-retry", 
-		headless: false,
+		headless: true,
 		viewport: { width: 1920, height: 1080 },
 		actionTimeout: 15000,
 		ignoreHTTPSErrors: true,
