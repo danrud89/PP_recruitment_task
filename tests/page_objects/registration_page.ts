@@ -81,8 +81,13 @@ export class RegistrationPage extends BasePage {
 	}
 
 	async clearInputField(locator: Locator): Promise<void> {
-		await locator.fill("");
-	}
+        try {
+            await locator.fill("");
+        } catch (error) {
+            console.error('Error clearing input field:', error);
+            throw error;
+        }
+    }
 
 	async fillFirstName(firstName?: string): Promise<void> {
 		try {
