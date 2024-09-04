@@ -1,89 +1,138 @@
-import { test, expect } from '@playwright/test';
-import { RegistrationPage } from '../page_objects/registration_page';
-import { generateUserData } from '../utils/data_generators';
+import { test, expect } from "@playwright/test";
+import { RegistrationPage } from "../page_objects/registration_page";
+import { ConfirmPage } from "../page_objects/confirm_page";
+import { RandomDataGenerator } from "../utils/data_generators";
 
-test.describe('Registration Form', () => {
-  let registrationPage: RegistrationPage;
+test.describe("Registration Form ", () => {
+	// Arrange
+	let registrationPage: RegistrationPage;
+	let confirmPage: ConfirmPage;
+	let generateUserData: RandomDataGenerator;
 
-  test.beforeEach(async ({ page }) => {
-    registrationPage = new RegistrationPage(page);
-    await registrationPage.visit();
-    await expect(registrationPage.heading).toBeVisible();
-  });
+	// Act
+	test.beforeEach(async ({ page }) => {
+		registrationPage = new RegistrationPage(page);
+		confirmPage = new ConfirmPage(page);
+		generateUserData = new RandomDataGenerator();
+		await registrationPage.visit();
 
-  test('should display validation errors for required fields', async () => {
-    await registrationPage.submitForm();
+		// Assert
+		await expect(registrationPage.heading).toBeVisible();
+	});
 
-    const errorMessages = await registrationPage.getErrorMessages();
-    expect(errorMessages).toContain('Pole Imię jest wymagane');
-    expect(errorMessages).toContain('Pole Nazwisko jest wymagane');
-    expect(errorMessages).toContain('Pole E-mail jest wymagane');
-    expect(errorMessages).toContain('Pole password jest wymagane');
-    expect(errorMessages).toContain('Pole Powtórz hasło jest wymagane');
-    expect(errorMessages).toContain('Pole Data urodzenia jest wymagane');
-    expect(errorMessages).toContain('To pole jest wymagane');
-  });
+	test("should display validation errors for required fields", async () => {
+		// Act
+		await registrationPage.submitForm();
+		const errorMessages = await registrationPage.getErrorMessages();
 
-  test('should register successfully with valid data', async () => {
-    const userData = generateUserData();
+		// Assert
+		expect(errorMessages).toContain("Pole Imię jest wymagane");
+		expect(errorMessages).toContain("Pole Nazwisko jest wymagane");
+		expect(errorMessages).toContain("Pole E-mail jest wymagane");
+		expect(errorMessages).toContain("Pole password jest wymagane");
+		expect(errorMessages).toContain("Pole Powtórz hasło jest wymagane");
+		expect(errorMessages).toContain("Pole Data urodzenia jest wymagane");
+		expect(errorMessages).toContain("To pole jest wymagane");
+	});
 
-    await registrationPage.fillFirstName(userData.firstName);
-    await registrationPage.fillLastName(userData.lastName);
-    await registrationPage.fillEmail(userData.email);
-    await registrationPage.fillPassword(userData.password);
-    await registrationPage.fillConfirmPassword(userData.confirmPassword);
-    await registrationPage.fillDob(userData.dob);
-    await registrationPage.acceptTerms();
-    await registrationPage.submitForm();
-  });
+	test("should register successfully with full form valid data", async () => {
+		// Act
+		const password = generateUserData.generateRandomPassword(12);
 
-  test('should show error for invalid email', async () => {
-    const userData = generateUserData();
-    userData.email = 'invalid-email';
+		await registrationPage.fillFirstName();
+		await registrationPage.fillLastName();
+		await registrationPage.fillEmail();
+		await registrationPage.fillPassword(password);
+		await registrationPage.fillConfirmPassword(password);
+		await registrationPage.fillDob("dob");
+		await registrationPage.fillPhoneNumber();
+		await registrationPage.selectLanguage("pl");
+		await registrationPage.acceptTerms();
+		await registrationPage.subscribeNewsletter();
+		await registrationPage.submitForm();
 
-    await registrationPage.fillFirstName(userData.firstName);
-    await registrationPage.fillLastName(userData.lastName);
-    await registrationPage.fillEmail(userData.email);
-    await registrationPage.fillPassword(userData.password);
-    await registrationPage.fillConfirmPassword(userData.confirmPassword);
-    await registrationPage.fillDob(userData.dob);
-    await registrationPage.acceptTerms();
-    await registrationPage.submitForm();
+		await confirmPage.heading.waitFor({ state: "visible", timeout: 2000 });
+		await confirmPage.email_notification.waitFor({
+			state: "visible",
+			timeout: 2000,
+		});
 
-    const errorMessages = await registrationPage.getErrorMessages();
-    expect(errorMessages).toContain('Podaj prawidłowy adres e-mail');
-  });
+		// Assert
+		await expect(confirmPage.heading).toBeVisible();
+		await expect(confirmPage.email_notification).toBeVisible();
+		await expect(confirmPage.heading).toContainText(confirmPage.message);
+	});
 
-  test('should show error for mismatched passwords', async () => {
-    const userData = generateUserData();
-    userData.confirmPassword = 'DifferentPassword123';
+	test("should show error for invalid email", async () => {
+		// Arrange
+		const invalidEmailAddresses: string[] = [
+			"invalidemail.com",
+			"user@.com",
+			"user@domain.",
+			"user@@domain.com",
+			"user@domain!#$.com",
+			"user name@domain.com",
+			"user@domain .com",
+			"a...a@domain.com",
+			"user@domain.##",
+			"@domain.com",
+			"user@",
+			"user.@domain.com",
+		];
 
-    await registrationPage.fillFirstName(userData.firstName);
-    await registrationPage.fillLastName(userData.lastName);
-    await registrationPage.fillEmail(userData.email);
-    await registrationPage.fillPassword(userData.password);
-    await registrationPage.fillConfirmPassword(userData.confirmPassword);
-    await registrationPage.fillDob(userData.dob);
-    await registrationPage.acceptTerms();
-    await registrationPage.submitForm();
+		// Act
+		for (const email of invalidEmailAddresses) {
+			await registrationPage.fillEmail(email);
+			await registrationPage.submitForm();
 
-    const errorMessages = await registrationPage.getErrorMessages();
-    expect(errorMessages).toContain('Hasła muszą być identyczne');
-  });
+			const errorMessages = await registrationPage.getErrorMessages();
 
-  test('should register with optional phone number and language', async () => {
-    const userData = generateUserData();
+			// Assert
+			await expect(errorMessages).toContain(
+				"Pole E-mail musi być poprawnym adresem email",
+			);
+		}
+	});
 
-    await registrationPage.fillFirstName(userData.firstName);
-    await registrationPage.fillLastName(userData.lastName);
-    await registrationPage.fillEmail(userData.email);
-    await registrationPage.fillPassword(userData.password);
-    await registrationPage.fillConfirmPassword(userData.confirmPassword);
-    await registrationPage.fillDob(userData.dob);
-    await registrationPage.fillPhoneNumber(userData.phoneNumber);
-    await registrationPage.selectLanguage('Polski');
-    await registrationPage.acceptTerms();
-    await registrationPage.submitForm();
+	test("should show error for mismatched passwords", async () => {
+		// Act
+		await registrationPage.fillPassword(
+			generateUserData.generateRandomPassword(10),
+		);
+		await registrationPage.fillConfirmPassword(
+			generateUserData.generateRandomPassword(12),
+		);
+		await registrationPage.submitForm();
 
-  });
+		const errorMessages = await registrationPage.getErrorMessages();
+
+		// Assert
+		expect(errorMessages).toContain("Hasła nie są jednakowe!");
+	});
+
+	test("should register successfully with required fields only", async () => {
+		// Act
+		await registrationPage.fillFirstName();
+		await registrationPage.fillLastName();
+		await registrationPage.fillEmail();
+		await registrationPage.fillPassword();
+		await registrationPage.fillConfirmPassword();
+		await registrationPage.fillDob("dob");
+		await registrationPage.acceptTerms();
+		await registrationPage.submitForm();
+
+		await confirmPage.heading.waitFor({ state: "visible", timeout: 2000 });
+		await confirmPage.email_notification.waitFor({
+			state: "visible",
+			timeout: 2000,
+		});
+
+		// Assert
+		await expect(confirmPage.heading).toBeVisible();
+		await expect(confirmPage.email_notification).toBeVisible();
+		await expect(confirmPage.heading).toContainText(confirmPage.message);
+		await expect(confirmPage.email_notification).toContainText(
+			confirmPage.emailNotification,
+		);
+	});
 });

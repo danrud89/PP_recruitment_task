@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker/locale/pl";
 import { type Locator, type Page, expect } from "@playwright/test";
 import { BasePage } from "./base_page";
+import { RandomDataGenerator } from "../utils/data_generators";
 
 export class RegistrationPage extends BasePage {
 	readonly heading: Locator;
@@ -17,6 +18,7 @@ export class RegistrationPage extends BasePage {
 	readonly submitButton: Locator;
 	readonly errorMessages: Locator;
 	private calendarMap: Map<string, Locator>;
+	private dataGenerator: RandomDataGenerator;
 
 	constructor(page: Page) {
 		super(page);
@@ -26,15 +28,15 @@ export class RegistrationPage extends BasePage {
 		this.email = page.locator('input[type="email"]');
 		this.password = page.locator('input[type="password"]').first();
 		this.confirmPassword = page.locator('input[type="password"]').last();
-		this.dateOfBirth = page.locator('input[type="date"]');
+		this.dateOfBirth = page.locator('input[name="date"]');
 		this.language = page.locator("select.input");
 		this.phoneNumber = page.locator("input.vti__input");
-		this.terms = page.locator('input[type="checbox"]').first();
-		this.newsletter = page.locator('input[type="checbox"]').last();
+		this.terms = page.locator('div.fake-input').first();
+		this.newsletter = page.locator('div.fake-input').last();
 		this.submitButton = page.getByRole("button", { name: "ZAREJESTRUJ" });
 		this.errorMessages = page.locator("span.errors");
-
 		this.calendarMap = new Map<string, Locator>([["dob", this.dateOfBirth]]);
+		this.dataGenerator = new RandomDataGenerator();
 	}
 
 	async visit() {
@@ -50,93 +52,87 @@ export class RegistrationPage extends BasePage {
 		await locator.fill("");
 	}
 
-	async fillFirstName(firstName: string): Promise <void> {
+	async fillFirstName(firstName?: string): Promise <void> {
 		try {
 			await this.clearInputField(this.firstName);
-			await this.firstName.fill(firstName);
+			await this.firstName.fill(firstName ?? faker.person.firstName("male"));
 		} catch (error) {
 			console.error(`Error filling first name with value ${firstName}:`, error);
 			throw error;
 		}
 	}
 
-	async fillLastName(lastName: string): Promise <void> {
+	async fillLastName(lastName?: string): Promise <void> {
 		try {
-			await this.clearInputField(this.password);
-			await this.lastName.fill(lastName);
+			await this.clearInputField(this.lastName);
+			await this.lastName.fill(lastName ?? faker.person.lastName());
 		} catch (error) {
 			console.error(`Error filling last name with value ${lastName}:`, error);
 			throw error;
 		}
 	}
 
-	async fillEmail(email: string): Promise <void> {
+	async fillEmail(email?: string): Promise <void> {
 		try {
 			await this.clearInputField(this.email);
-			await this.email.fill(email);
+			await this.email.fill(email ?? faker.internet.exampleEmail());
 		} catch (error) {
 			console.error(`Error filling email with value ${email}:`, error);
 			throw error;
 		}
 	}
 
-	async fillPassword(password: string): Promise <void> {
+	async fillPassword(password?: string): Promise <void> {
 		try {
 			await this.clearInputField(this.password);
-			await this.password.fill(password);
+			await this.password.fill(password ?? this.dataGenerator.generateRandomPassword(15));
 		} catch (error) {
 			console.error("Error filling password:", error);
 			throw error;
 		}
 	}
 
-	async fillConfirmPassword(confirmPassword: string): Promise <void> {
+	async fillConfirmPassword(confirmPassword?: string): Promise <void> {
 		try {
 			await this.clearInputField(this.confirmPassword);
-			await this.confirmPassword.fill(confirmPassword);
+			await this.confirmPassword.fill(confirmPassword ?? this.dataGenerator.generateRandomPassword(15));
 		} catch (error) {
 			console.error("Error filling confirm password:", error);
 			throw error;
 		}
 	}
 
-	async fillDob(dob: string, calendarName: "dob"): Promise <void> {
+	async fillDob( calendarName: "dob", dob?: string): Promise <void> {
 		try {
 			const calendarLocator = this.calendarMap.get(calendarName);
 			if (!calendarLocator) {
 				throw new Error(`Invalid calendar name:  '${calendarName}'.`);
 			}
-			await calendarLocator.click();
-			await calendarLocator.fill(dob);
+			await calendarLocator.fill(dob ?? faker.date.birthdate({ min: 18, max: 65 }).toISOString().split('T')[0],);
 		} catch (error) {
 			console.error(`Error filling date of birth with value ${dob}:`, error);
 			throw error;
 		}
 	}
 
-	async selectLanguage(language: string): Promise <void> {
+	async selectLanguage(languageValue: string): Promise<void> {
 		try {
-			const options = await this.language.locator("option").allTextContents();
-			if (options.includes(language)) {
-				await this.language.selectOption({ label: language });
-			} else {
-				throw new Error(
-					`Language "${language}" is not available in the dropdown.`,
-				);
-			}
+		  if (await this.language.isVisible() && await this.language.isEnabled()) {
+			await this.language.selectOption({ value: languageValue });
+			console.log(`Successfully selected language: ${languageValue}`);
+		  } else {
+			console.warn('Dropdown is not visible or not enabled.');
+		  }
 		} catch (error) {
-			console.error(
-				`Error selecting language with value "${language}":`,
-				error,
-			);
-			throw error;
+		  console.error(`Error selecting language with value ${languageValue}:`, error);
+		  throw error;
 		}
-	}
+	  }
 
-	async fillPhoneNumber(phoneNumber: string): Promise <void> {
+	async fillPhoneNumber(phoneNumber?: string): Promise <void> {
 		try {
 			await this.clearInputField(this.phoneNumber);
-			await this.phoneNumber.fill(phoneNumber);
+			await this.phoneNumber.fill(phoneNumber ?? await this.dataGenerator.generateRandomPhoneNumber());
 		} catch (error) {
 			console.error(
 				`Error filling phone number with value ${phoneNumber}:`,
@@ -148,7 +144,7 @@ export class RegistrationPage extends BasePage {
 
 	async acceptTerms(): Promise <void> {
 		try {
-			await this.terms.check();
+			await this.terms.click();
 		} catch (error) {
 			console.error("Error accepting terms and conditions:", error);
 			throw error;
@@ -157,7 +153,7 @@ export class RegistrationPage extends BasePage {
 
 	async subscribeNewsletter(): Promise <void> {
 		try {
-			await this.newsletter.check();
+			await this.newsletter.click();
 		} catch (error) {
 			console.error("Error subscribing to the newsletter:", error);
 			throw error;
