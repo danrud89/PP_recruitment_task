@@ -3,7 +3,7 @@
 Clone the repository
 
 ```bash
-git clone https://github.com/sparingsoftware/qa-form
+git clone https://github.com/danrud89/PP_recruitment_task.git
 ```
 
 Then open the directory

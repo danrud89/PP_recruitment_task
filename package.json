@@ -7,10 +7,10 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "linter": "biome lint .",
-		"format": "biome format --write .",
-		"e2e": "npx playwright test",
-		"e2e:headed": "npx playwright test --headed",
-		"show-e2e-report": "npx playwright show-report"
+    "format": "biome format --write .",
+    "e2e": "npx playwright test",
+    "e2e:headed": "npx playwright test --headed",
+    "show-e2e-report": "npx playwright show-report"
   },
   "dependencies": {
     "@cospired/i18n-iso-languages": "^4.2.0",
@@ -21,6 +21,7 @@
     "vue2-datepicker": "^3.11.1"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
     "@playwright/test": "^1.46.1",
     "@types/node": "^22.5.3",
     "@vue/cli-plugin-babel": "^4.5.13",
