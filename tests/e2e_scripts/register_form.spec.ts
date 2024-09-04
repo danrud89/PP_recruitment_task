@@ -18,12 +18,15 @@ test.describe("Registration Form ", () => {
 
 		// Assert
 		await expect(registrationPage.heading).toBeVisible();
-    await Promise.all(registrationPage.elements.map(element => element.isVisible()));
-    await Promise.all(registrationPage.elements.map(element => element.isEnabled()));
+		await Promise.all(
+			registrationPage.elements.map((element) => element.isVisible()),
+		);
+		await Promise.all(
+			registrationPage.elements.map((element) => element.isEnabled()),
+		);
 	});
 
 	test("should display validation errors for required fields", async () => {
-
 		// Arrange
 		const expectedErrors = registrationPage.errors;
 
@@ -38,7 +41,6 @@ test.describe("Registration Form ", () => {
 	});
 
 	test("should register successfully with full form valid data", async () => {
-
 		// Act
 		const password = generateUserData.generateRandomPassword(12);
 
@@ -67,7 +69,6 @@ test.describe("Registration Form ", () => {
 	});
 
 	test("should show error for invalid email", async () => {
-
 		// Arrange
 		const invalidEmailAddresses = generateUserData.invalidEmailAddresses;
 
@@ -79,14 +80,11 @@ test.describe("Registration Form ", () => {
 			const errorMessages = await registrationPage.getErrorMessages();
 
 			// Assert
-			await expect(errorMessages).toContain(
-				registrationPage.errors[3],
-			);
+			await expect(errorMessages).toContain(registrationPage.errors[3]);
 		}
 	});
 
 	test("should show error for mismatched passwords", async () => {
-    
 		// Act
 		await registrationPage.fillPassword(
 			generateUserData.generateRandomPassword(10),
@@ -103,7 +101,6 @@ test.describe("Registration Form ", () => {
 	});
 
 	test("should show phone number error for invalid syntax", async () => {
-
 		// Arrange
 		const invalidPhoneNumbers = generateUserData.invalidPhoneNumbers;
 
@@ -116,14 +113,13 @@ test.describe("Registration Form ", () => {
 			const errorMessages = await registrationPage.getErrorMessages();
 
 			// Assert
-      for (const error of errorMessages){
-        expect(registrationPage.errors).toContain(error);
-      }
+			for (const error of errorMessages) {
+				expect(registrationPage.errors).toContain(error);
+			}
 		}
 	});
 
 	test("should register successfully with required fields only", async () => {
-    
 		// Act
 		const password = generateUserData.generateRandomPassword(12);
 
