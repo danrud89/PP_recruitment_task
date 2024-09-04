@@ -67,7 +67,21 @@ Oczekiwany rezultat:
     Pojawia się komunikat błędu informujący, że hasła muszą być identyczne.
     Formularz nie zostaje wysłany.
 
-Scenariusz testowy 5: Rejestracja z wykorzystanie wyłącznie pól obowiązkowych
+Scenariusz testowy 5: Weryfikacja poprawności numeru telefonu
+
+Kroki:
+
+    Otwórz stronę z formularzem rejestracji.
+    Wypełnij pola obowiązkowe, ale w polu "Telefon" wpisz niepoprawny numer (np. "safkl23595@#$").
+    Wypełnij pozostałe obowiązkowe pola i zaznacz checkbox akceptacji regulaminu.
+    Kliknij przycisk "ZAREJESTRUJ".
+
+Oczekiwany rezultat:
+
+    Pojawia się komunikat błędu informujący, że wprowadzony adres e-mail jest nieprawidłowy.
+    Formularz nie zostaje wysłany.
+
+Scenariusz testowy 6: Rejestracja z wykorzystanie wyłącznie pól obowiązkowych
 
 Kroki:
 

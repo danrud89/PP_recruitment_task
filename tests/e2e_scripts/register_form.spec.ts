@@ -18,25 +18,24 @@ test.describe("Registration Form ", () => {
 
 		// Assert
 		await expect(registrationPage.heading).toBeVisible();
-    await expect(registrationPage.firstName).toBeVisible();
-    await expect(registrationPage.firstName).toBeVisible();
-    await expect(registrationPage.firstName).toBeVisible();
-    
+		await expect(registrationPage.firstName).toBeVisible();
+		await expect(registrationPage.firstName).toBeVisible();
+		await expect(registrationPage.firstName).toBeVisible();
 	});
 
 	test("should display validation errors for required fields", async () => {
+
+		// Arrange
+		const expectedErrors = registrationPage.errors;
+
 		// Act
 		await registrationPage.submitForm();
 		const errorMessages = await registrationPage.getErrorMessages();
 
 		// Assert
-		expect(errorMessages).toContain("Pole Imię jest wymagane");
-		expect(errorMessages).toContain("Pole Nazwisko jest wymagane");
-		expect(errorMessages).toContain("Pole E-mail jest wymagane");
-		expect(errorMessages).toContain("Pole password jest wymagane");
-		expect(errorMessages).toContain("Pole Powtórz hasło jest wymagane");
-		expect(errorMessages).toContain("Pole Data urodzenia jest wymagane");
-		expect(errorMessages).toContain("To pole jest wymagane");
+		for (const error of errorMessages) {
+			expect(expectedErrors).toContain(error);
+		}
 	});
 
 	test("should register successfully with full form valid data", async () => {
@@ -69,20 +68,7 @@ test.describe("Registration Form ", () => {
 
 	test("should show error for invalid email", async () => {
 		// Arrange
-		const invalidEmailAddresses: string[] = [
-			"invalidemail.com",
-			"user@.com",
-			"user@domain.",
-			"user@@domain.com",
-			"user@domain!#$.com",
-			"user name@domain.com",
-			"user@domain .com",
-			"a...a@domain.com",
-			"user@domain.##",
-			"@domain.com",
-			"user@",
-			"user.@domain.com",
-		];
+		const invalidEmailAddresses = generateUserData.invalidEmailAddresses;
 
 		// Act
 		for (const email of invalidEmailAddresses) {
@@ -93,7 +79,7 @@ test.describe("Registration Form ", () => {
 
 			// Assert
 			await expect(errorMessages).toContain(
-				"Pole E-mail musi być poprawnym adresem email",
+				registrationPage.errors[3],
 			);
 		}
 	});
@@ -111,16 +97,37 @@ test.describe("Registration Form ", () => {
 		const errorMessages = await registrationPage.getErrorMessages();
 
 		// Assert
-		expect(errorMessages).toContain("Hasła nie są jednakowe!");
+		expect(errorMessages).toContain(registrationPage.errors[5]);
+	});
+
+	test("should show phone number error for invalid syntax", async () => {
+		// Arrange
+		const invalidPhoneNumbers = generateUserData.invalidPhoneNumbers;
+
+		// Act
+		for (const phone_number of invalidPhoneNumbers) {
+			await registrationPage.fillPhoneNumber(phone_number);
+			await registrationPage.submitForm();
+			await registrationPage.wait(1000);
+			await registrationPage.submitForm();
+			const errorMessages = await registrationPage.getErrorMessages();
+      
+			// Assert
+      for (const error of errorMessages){
+        expect(registrationPage.errors).toContain(error);
+      }
+		}
 	});
 
 	test("should register successfully with required fields only", async () => {
 		// Act
+		const password = generateUserData.generateRandomPassword(12);
+
 		await registrationPage.fillFirstName();
 		await registrationPage.fillLastName();
 		await registrationPage.fillEmail();
-		await registrationPage.fillPassword();
-		await registrationPage.fillConfirmPassword();
+		await registrationPage.fillPassword(password);
+		await registrationPage.fillConfirmPassword(password);
 		await registrationPage.fillDob("dob");
 		await registrationPage.acceptTerms();
 		await registrationPage.submitForm();

@@ -13,6 +13,37 @@ export class RandomDataGenerator {
 		"Szeroka",
 	];
 
+	public invalidPhoneNumbers: string[] = [
+		"123456",               
+		"12-34-56",            
+		"1234567abc",           
+		"+1234567890!",         
+		"123 456 789",         
+		"(123) 456-7890",       
+		"123-456-78a",          
+		"+48 123 456 7890",     
+		"123-456-789-0123",     
+		"+1-800-FLOWERS",       
+		"12345!@#$%",           
+		"++123456789",          
+		"00123456789",  
+	  ];
+	
+	  public invalidEmailAddresses: string[] = [
+		"invalidemail.com",
+		"user@.com",
+		"user@domain.",
+		"user@@domain.com",
+		"user@domain!#$.com",
+		"user name@domain.com",
+		"user@domain .com",
+		"a...a@domain.com",
+		"user@domain.##",
+		"@domain.com",
+		"user@",
+		"user.@domain.com",
+	];
+
 	generateRandomPassword(length: number): string {
 		if (length < 4) {
 		  throw new Error("Password length must be at least 4 characters to include all required character types.");
