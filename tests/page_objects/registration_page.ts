@@ -5,6 +5,7 @@ import { RandomDataGenerator } from "../utils/data_generators";
 
 export class RegistrationPage extends BasePage {
 	readonly heading: Locator;
+	readonly form: Locator;
 	readonly firstName: Locator;
 	readonly lastName: Locator;
 	readonly email: Locator;
@@ -37,6 +38,7 @@ export class RegistrationPage extends BasePage {
 	constructor(page: Page) {
 		super(page);
 		this.heading = page.locator("h1");
+		this.form = page.locator("form");
 		this.firstName = page.getByPlaceholder("Imię");
 		this.lastName = page.getByPlaceholder("Nazwisko");
 		this.email = page.locator('input[type="email"]');

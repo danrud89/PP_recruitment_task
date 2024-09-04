@@ -18,9 +18,8 @@ test.describe("Registration Form ", () => {
 
 		// Assert
 		await expect(registrationPage.heading).toBeVisible();
-		await expect(registrationPage.firstName).toBeVisible();
-		await expect(registrationPage.firstName).toBeVisible();
-		await expect(registrationPage.firstName).toBeVisible();
+		await expect(registrationPage.form).toBeVisible();
+		await expect(registrationPage.firstName).toBeEnabled();
 	});
 
 	test("should display validation errors for required fields", async () => {
@@ -39,6 +38,7 @@ test.describe("Registration Form ", () => {
 	});
 
 	test("should register successfully with full form valid data", async () => {
+
 		// Act
 		const password = generateUserData.generateRandomPassword(12);
 
@@ -67,6 +67,7 @@ test.describe("Registration Form ", () => {
 	});
 
 	test("should show error for invalid email", async () => {
+
 		// Arrange
 		const invalidEmailAddresses = generateUserData.invalidEmailAddresses;
 
@@ -85,6 +86,7 @@ test.describe("Registration Form ", () => {
 	});
 
 	test("should show error for mismatched passwords", async () => {
+    
 		// Act
 		await registrationPage.fillPassword(
 			generateUserData.generateRandomPassword(10),
@@ -101,6 +103,7 @@ test.describe("Registration Form ", () => {
 	});
 
 	test("should show phone number error for invalid syntax", async () => {
+
 		// Arrange
 		const invalidPhoneNumbers = generateUserData.invalidPhoneNumbers;
 
@@ -111,7 +114,7 @@ test.describe("Registration Form ", () => {
 			await registrationPage.wait(1000);
 			await registrationPage.submitForm();
 			const errorMessages = await registrationPage.getErrorMessages();
-      
+
 			// Assert
       for (const error of errorMessages){
         expect(registrationPage.errors).toContain(error);
@@ -120,6 +123,7 @@ test.describe("Registration Form ", () => {
 	});
 
 	test("should register successfully with required fields only", async () => {
+    
 		// Act
 		const password = generateUserData.generateRandomPassword(12);
 
