@@ -3,8 +3,7 @@ import { type Locator, type Page, expect } from "@playwright/test";
 import { BasePage } from "./base_page";
 
 export class RegistrationPage extends BasePage {
-
-    readonly heading: Locator;
+	readonly heading: Locator;
 	readonly firstName: Locator;
 	readonly lastName: Locator;
 	readonly email: Locator;
@@ -17,10 +16,11 @@ export class RegistrationPage extends BasePage {
 	readonly newsletter: Locator;
 	readonly submitButton: Locator;
 	readonly errorMessages: Locator;
+	private calendarMap: Map<string, Locator>;
 
 	constructor(page: Page) {
 		super(page);
-        this.heading = page.locator("h1");
+		this.heading = page.locator("h1");
 		this.firstName = page.getByPlaceholder("Imię");
 		this.lastName = page.getByPlaceholder("Nazwisko");
 		this.email = page.locator('input[type="email"]');
@@ -33,6 +33,8 @@ export class RegistrationPage extends BasePage {
 		this.newsletter = page.locator('input[type="checbox"]').last();
 		this.submitButton = page.getByRole("button", { name: "ZAREJESTRUJ" });
 		this.errorMessages = page.locator("span.errors");
+
+		this.calendarMap = new Map<string, Locator>([["dob", this.dateOfBirth]]);
 	}
 
 	async visit() {
@@ -98,10 +100,14 @@ export class RegistrationPage extends BasePage {
 		}
 	}
 
-	async fillDob(dob: string) {
+	async fillDob(dob: string, calendarName: "dob") {
 		try {
-			await this.clearInputField(this.dateOfBirth);
-			await this.dateOfBirth.fill(dob);
+			const calendarLocator = this.calendarMap.get(calendarName);
+			if (!calendarLocator) {
+				throw new Error(`Invalid calendar name:  '${calendarName}'.`);
+			}
+			await calendarLocator.click();
+			await calendarLocator.fill(dob);
 		} catch (error) {
 			console.error(`Error filling date of birth with value ${dob}:`, error);
 			throw error;
@@ -110,9 +116,19 @@ export class RegistrationPage extends BasePage {
 
 	async selectLanguage(language: string) {
 		try {
-			await this.language.selectOption(language);
+			const options = await this.language.locator("option").allTextContents();
+			if (options.includes(language)) {
+				await this.language.selectOption({ label: language });
+			} else {
+				throw new Error(
+					`Language "${language}" is not available in the dropdown.`,
+				);
+			}
 		} catch (error) {
-			console.error(`Error selecting language with value ${language}:`, error);
+			console.error(
+				`Error selecting language with value "${language}":`,
+				error,
+			);
 			throw error;
 		}
 	}
@@ -150,7 +166,14 @@ export class RegistrationPage extends BasePage {
 
 	async submitForm() {
 		try {
-			await this.submitButton.click();
+			const isVisible = await this.submitButton.isVisible();
+			const isEnabled = await this.submitButton.isEnabled();
+
+			if (isVisible && isEnabled) {
+				await this.submitButton.click();
+			} else {
+				throw new Error("Submit button is neither visible nor enabled.");
+			}
 		} catch (error) {
 			console.error("Error submitting the form:", error);
 			throw error;
@@ -159,7 +182,11 @@ export class RegistrationPage extends BasePage {
 
 	async getErrorMessages() {
 		try {
-			return await this.errorMessages.allTextContents();
+			if (await this.errorMessages.isVisible()) {
+				return await this.errorMessages.allTextContents();
+			}
+			console.warn("No error messages are visible on the page.");
+			return [];
 		} catch (error) {
 			console.error("Error retrieving error messages:", error);
 			throw error;
