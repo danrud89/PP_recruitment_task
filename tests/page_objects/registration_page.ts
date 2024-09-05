@@ -233,11 +233,10 @@ export class RegistrationPage extends BasePage {
 
 	async getErrorMessages(): Promise<string[]> {
 		try {
-			const errorElements = this.page.locator("span.errors");
 			const errorMessages: string[] = [];
 
-			for (let index = 0; index < (await errorElements.count()); ++index) {
-				const errorElement = errorElements.nth(index);
+			for (let index = 0; index < (await this.errorMessages.count()); ++index) {
+				const errorElement = this.errorMessages.nth(index);
 				if (await errorElement.isVisible()) {
 					const text = await errorElement.textContent();
 					if (text) {
